@@ -1,3 +1,4 @@
+import "./SingleCard.scss";
 const SingleCard = ({ product }) => {
   return (
     <div className='singlecard'>
