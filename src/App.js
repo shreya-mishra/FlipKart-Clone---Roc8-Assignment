@@ -8,32 +8,31 @@ import { filterTheProducts } from "./function/filter";
 
 function App() {
   const [allProducts, setProducts] = useState(products);
-  const [sortBy, setSortBy] = useState();
+  const [sortValue, setsortValue] = useState();
   const [filterValues, setFilterValues] = useState({
     size: [],
     brand: [],
     idealFor: [],
   });
-  const [filteredProductValues, setFilteredProductValues] = useState([]);
-
-  useEffect(() => {
-    console.log(filterTheProducts(filterValues, allProducts));
-    setFilteredProductValues(filterTheProducts(filterValues, allProducts));
-  }, [filterValues]);
 
   return (
     <div className='App'>
       <Header />
       <div className='layout'>
         <Sidebar
-          selectedFilter={filterValues}
-          setSelectedFilter={(filters) => setFilterValues(filters)}
+          filterValues={filterValues}
+          setFilterValues={setFilterValues}
           allProducts={allProducts}
+          sortValue={sortValue}
           setProducts={setProducts}
+          setsortValue={setsortValue}
         />
         <ProductSection
-          allProducts={filteredProductValues}
+          filterValues={filterValues}
+          allProducts={allProducts}
+          sortValue={sortValue}
           setProducts={setProducts}
+          setsortValue={setsortValue}
         />
       </div>
     </div>

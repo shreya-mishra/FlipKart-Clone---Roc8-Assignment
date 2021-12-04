@@ -1,47 +1,35 @@
 import { Button } from "react-bootstrap";
 import "./Sidebar.scss";
 import { products } from "../../data/product";
+import { addFilter, filterTheProducts } from "../../function/filter";
 
 const Sidebar = ({
+  setsortValue,
+  setFilterValues,
+  filterValues,
+  sortValue,
   setProducts,
-  allProducts,
-  selectedFilter,
-  setSelectedFilter,
 }) => {
-  const handleBrandChange = (brandValue, checked) => {
-    let selectedBrand = [];
-    if (checked) {
-      selectedBrand = selectedFilter.brand.filter(
-        (item) => item !== brandValue
-      );
-    } else {
-      selectedBrand = [...selectedFilter.brand, brandValue];
-    }
-    setSelectedFilter({
-      ...selectedFilter,
-      brand: selectedBrand,
+  const clearFilters = () => {
+    setsortValue();
+    setFilterValues({
+      size: [],
+      brand: [],
+      idealFor: [],
     });
-  };
-  const handleSizeChange = (sizeValue, checked) => {
-    let selectedSize = [];
-    if (checked) {
-      selectedSize = selectedFilter.size.filter((item) => item !== sizeValue);
-    } else {
-      selectedSize = [...selectedFilter.size, sizeValue];
-    }
-    setSelectedFilter({
-      ...selectedFilter,
-      size: selectedSize,
-    });
+    filterTheProducts(products, sortValue, filterValues);
+    document
+      .querySelectorAll('input[type="checkbox"]')
+      .forEach((el) => (el.checked = false));
   };
 
   return (
     <div className='sidebar'>
       <span className='sidebar__title'>
         <span>Filters</span>
-        {/* <Button onClick={() => console.log("clear filter")} size='sm'>
+        <Button onClick={clearFilters} size='sm'>
           Clear all
-        </Button> */}
+        </Button>
       </span>
       <hr />
       <div className='sidebar__categories'>
@@ -55,14 +43,11 @@ const Sidebar = ({
             }}>
             <input
               type='checkbox'
-              onChange={(e) => {
-                handleBrandChange(
-                  prod.brand,
-                  selectedFilter.brand.includes(prod.brand) || false
-                );
-              }}
+              onChange={(e) =>
+                setFilterValues(addFilter(filterValues, e.target, "brand"))
+              }
               name={prod.brand}
-              value={selectedFilter.brand.includes(prod.brand) || false}
+              value={prod.brand}
             />
             <label className='mx-2'>{prod.brand}</label>
           </div>
@@ -81,14 +66,11 @@ const Sidebar = ({
               type='checkbox'
               name={prod}
               value={prod}
-              onChange={(e) => {
-                handleSizeChange(
-                  prod,
-                  selectedFilter.size.includes(prod) || false
-                );
-              }}
-              name={prod.size}
-              value={selectedFilter.size.includes(prod) || false}
+              onChange={(e) =>
+                setFilterValues(addFilter(filterValues, e.target, "size"))
+              }
+              name={prod}
+              value={prod}
             />
             <label className='mx-2'>{prod}</label>
           </div>
@@ -107,13 +89,20 @@ const Sidebar = ({
               type='checkbox'
               name={prod}
               value={prod}
-              onChange={(e) => console.log("filter gender", e)}
+              onChange={(e) =>
+                setFilterValues(addFilter(filterValues, e.target, "idealFor"))
+              }
             />
             <label className='mx-2'>{prod}</label>
           </div>
         ))}
       </div>
-      <Button onClick={() => console.log("clicked")}>Filter</Button>
+      <Button
+        onClick={() =>
+          setProducts(filterTheProducts(products, sortValue, filterValues))
+        }>
+        Filter
+      </Button>
     </div>
   );
 };
